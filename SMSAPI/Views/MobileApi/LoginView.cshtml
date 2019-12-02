@@ -1,0 +1,62 @@
+﻿
+@{
+    ViewBag.Title = "LoginView";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<link href="~/Content/css/_form.css" rel="stylesheet" />
+<link href="~/Content/css/AddCase.css" rel="stylesheet" />
+<form id="addapp" method="post" runat="server" action="" enctype="multipart/form-data">
+    <div id="pagecontent" class="row from-conent ">
+        <div class="input-group ">
+
+            <div class="col-sm-12">
+                <h2 style="text-align:center;margin-left:8%">巡检系统app上传系统</h2>
+            </div>
+
+        </div>
+
+        <div class="input-group ">
+            <div class="col-sm-3">
+
+            </div>
+            <label for="EDTIONCODE" class="col-sm-2 control-label"><i class="must">*</i>账号:</label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" id="user" name="user" autocomplete="off" maxlength="20" required>
+            </div>
+        </div>
+
+        <div class="input-group ">
+            <div class="col-sm-3">
+
+            </div>
+            <label for="EDTIONCODE" class="col-sm-2 control-label"><i class="must">*</i>密码:</label>
+            <div class="col-sm-3">
+                <input type="password" class="form-control" id="pass" name="pass" autocomplete="off" maxlength="20" required>
+            </div>
+        </div>
+
+        <div class="input-group ">
+            <div class="col-sm-5"></div>
+            <div class="col-sm-3 from-left-btn">
+                <input type="button" class="form-control btn " style="background-color:#1CC9B5;color:#FFFFFF;" value="登录" id="saveForm" v-on:click="saveForm" />
+            </div>
+        </div>
+    </div>
+</form>
+@section scripts{
+    <script>
+        $("#saveForm").click(function(){
+            $.SendPostAjax("./LoginResult", { "user": $("#user").val(), "pass": $("#pass").val() }
+            , function (d)
+            {
+                if (d == "1") {
+                    window.location.href = "./Index";
+                }
+                else {
+                    layer.msg("帐号或密码错误！");
+                }
+            });
+        });
+
+    </script>
+    }

@@ -1,0 +1,125 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_AppForm.cshtml";
+}
+<div id="app">
+    <div style="width:100%" id="AppEdit">
+        <div class=" row">
+
+            <div class="row col-md-12 " style="margin-top:0px;margin-left:5%;">
+                <div class="col-md-10 ">
+                    <font size="6" style="top:1%">巡检App版本控制</font>
+                </div>
+                <div class="col-md-2">
+                    <button id="btn_add" class="btn btn-add" v-on:click="addTeam" style="margin-top:3%">
+                        <img style="width:20px;height:20px" src="~/Content/images/未标题-1_03-10.png" /> 新增
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div >
+            <table id="tb_SearchResult" class="table-bordered"></table>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+
+        var user = getCookie("user") // 读取 cookie
+        var pass = getCookie("pass") // 读取 cookie
+
+        if (user == null || pass == null) {
+            window.location.href = "./Index";
+        }
+        $.SendPostAjax("./IfLogin", { "user": user, "pass": pass }
+            , function (d) {
+                if (d != "1") {
+                    layer.msg("帐号或密码错误！");
+                    window.location.href = "./LoginView";
+                }
+            });
+    var oTable;
+    var appVm = new Vue({
+        el: '#AppEdit',
+        data: {
+            TeamTYPE: "",
+        },
+        mounted: function () {
+            //初始化
+            this.initData();
+        },
+        methods: {
+            initData: function () {
+                //debugger;//初始化数据
+                var that = this;
+                oTable = new BootstrapsTable();
+                var colums = [
+                    {
+                        field: 'EDTIONCODE',
+                        halign: "center",
+                        align: "center",
+                        title: '版本号',
+                    },  
+                    {
+                        field: 'APPVERSION',
+                        halign: "center",
+                        align: "center",
+                        title: 'APP版本信息',
+                    },
+                    {
+                        field: 'ADDTIME',
+                        halign: "center",
+                        align: "center",
+                        title: '添加时间',
+                    },
+                    {
+                        field: 'DOWNLOADURL',
+                        halign: "center",
+                        align: "center",
+                        title: '下载地址',
+                    },
+                {
+                    field: 'Id',
+                    title: '操作',
+                    halign: "center",
+                    align: "center",
+                    events: window.operateEvents = {
+                        'click .down-tool': function (e, value, row, index) {
+                           //$.SendGetAjax("./Appedtion/DownloadApp", { "id": value });
+                            window.open("./DownloadApp?id=" + value, "_top");
+                        },
+                        'click .edit-tool': function (e, value, row, index) {
+                            commonJsPanel('修改信息', "./AddAppedtion?id="+ value, 700, 430);
+                        },
+                        'click .delete-tool': function (e, value, row, index) {
+                            DelConfirm('您确定要删除么?', "./DeleteAppedtion", value, that.initTable);
+                        },
+                    },
+                    formatter: function (value, row, index) {
+                        if (value != "") {
+                            var html = "<img class='down-tool' data-key='" + value + "' src= '../Content/images/download.png' /> &nbsp" +
+                                '<img src="../Content/images/未标题-1_03-20.png"  class="edit-tool" data-id="' + value + '" />&nbsp'
+                                + "<img class='delete-tool' data-key='" + value + "' src= '../Content/images/未标题-1_03-21.png' />";
+                            return html;
+                        }
+                    },
+                }];
+                oTable.SetColums(colums);
+                oTable.pageSize = 10;
+                this.initTable();
+                //$.SendPostAjax("./CodeManage/GetTeamType", { "type": "用户角色" }, that.initTeamTYPE);
+            }
+            ,
+            addTeam: function () {
+                commonJsPanel("新增班组信息", "./AddAppedtion",700, 430);
+            },
+            initTable: function () {
+                oTable.Init("tb_SearchResult", "./GetAllEdtion");
+                closeAllJsPanel()
+            },
+        },
+    })
+    </script>
+
+}
