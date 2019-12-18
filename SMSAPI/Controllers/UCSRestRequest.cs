@@ -5,6 +5,8 @@ using System.Web;
 using System.Net;
 using System.IO;
 using System.Text;
+using Robin.Web.Mvc.Controllers;
+using Microsoft.Extensions.Configuration;
 
 namespace WebProxy
 {
@@ -16,17 +18,17 @@ namespace WebProxy
             EType_JSON
         };
 
-
+        public static IConfigurationRoot Config { get; set; }
         //服务地址
         private string m_restAddress = null;
         //服务地址端口
         private string m_restPort = null;
         //用户ID
-        private string m_mainAccount = "b5085f428e0b8c7195b76cfdd50efe87";
+        private string m_mainAccount = null;
         //用户token
-        private string m_mainToken = "cf7824c3a9822d2f802e00177fa50183";
+        private string m_mainToken =null;
         //应用APPID
-        private string m_appId = "f0f0a7bc06ba438c92c4226907b1c1ca";
+        private string m_appId = null;
         private bool m_isWriteLog = false;
 
         private EBodyType m_bodyType = EBodyType.EType_JSON;
@@ -95,20 +97,33 @@ namespace WebProxy
 
 
 
-
-
-        /// <summary>
-        /// 发送短信
-        /// </summary>
-        /// <param name="to">短信接收端手机号码</param>
-        /// <param name="templateId">短信模板ID</param>
-        /// <param name="param">内容数据，用于替换模板中{数字}</param>
-        /// <exception cref="ArgumentNullException">参数不能为空</exception>
-        /// <exception cref="Exception"></exception>
-        /// <returns>包体内容</returns>
-        public string SendSMS(string to, string templateId, string param)
+        public void CofigHelp()
         {
+            var config = new ConfigurationBuilder()
+                .SetBasePath(System.AppDomain.CurrentDomain.BaseDirectory)
+                .AddJsonFile("appsettings.json").Build();
+            Config = config;
+            //用户ID
+            m_mainAccount = Config["AccountSid"];
+            //用户token
+             m_mainToken = Config["Token"];
+            //应用APPID
+            m_appId = Config["AppID"];
+       }
 
+
+    /// <summary>
+    /// 发送短信
+    /// </summary>
+    /// <param name="to">短信接收端手机号码</param>
+    /// <param name="templateId">短信模板ID</param>
+    /// <param name="param">内容数据，用于替换模板中{数字}</param>
+    /// <exception cref="ArgumentNullException">参数不能为空</exception>
+    /// <exception cref="Exception"></exception>
+    /// <returns>包体内容</returns>
+    public string SendSMS(string to, string templateId, string param)
+        {
+            CofigHelp();
             if (to == null)
             {
                 throw new ArgumentNullException("to");
@@ -220,6 +235,7 @@ namespace WebProxy
         /// <returns></returns>
         public string GetTemplateById(string templateId)
         {
+            CofigHelp();
             if (templateId == null)
             {
                 throw new ArgumentNullException("templateId");

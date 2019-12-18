@@ -30,6 +30,9 @@ namespace SMSAPI
 
                 var phone = Request.QueryString["Phones"];
                 var Param5 = Request.QueryString["Param5"] == "" ? null : Request.QueryString["Param5"];
+                var Param6 = Request.QueryString["Param6"] == "" ? null : Request.QueryString["Param6"];
+                var Param7 = Request.QueryString["Param7"] == "" ? null : Request.QueryString["Param7"];
+                var Param8 = Request.QueryString["Param8"] == "" ? null : Request.QueryString["Param8"];
                 string templatedId = Request.QueryString["TemplatedId"].ToString();
                 
                 string sendstr = Param1;
@@ -48,6 +51,18 @@ namespace SMSAPI
                 if (Param5 != null)
                 {
                     sendstr = sendstr + "," + Param5;
+                }
+                if (Param6 != null)
+                {
+                    sendstr = sendstr + "," + Param6;
+                }
+                if (Param7 != null)
+                {
+                    sendstr = sendstr + "," + Param7;
+                }
+                if (Param8 != null)
+                {
+                    sendstr = sendstr + "," + Param8;
                 }
                 WebProxy.UCSRestRequest api = new WebProxy.UCSRestRequest();
                 #region 验证模板
