@@ -109,7 +109,8 @@ namespace WebProxy
              m_mainToken = Config["Token"];
             //应用APPID
             m_appId = Config["AppID"];
-       }
+            m_restAddress = Config["restAddress"];
+        }
 
 
     /// <summary>
@@ -142,7 +143,7 @@ namespace WebProxy
                 string sigstr = MD5Encrypt(m_mainAccount + m_mainToken + date);
                 string uriStr;
                 string xml = (m_bodyType == EBodyType.EType_XML ? ".xml" : "");
-                uriStr = string.Format("https://api.ucpaas.com/{0}/Accounts/{1}/Messages/templateSMS{2}?sig={3}",  softVer, m_mainAccount, xml, sigstr);
+                uriStr = string.Format("https://"+m_restAddress+"/{0}/Accounts/{1}/Messages/templateSMS{2}?sig={3}",  softVer, m_mainAccount, xml, sigstr);
                 //uriStr = "https://open.ucpaas.com/ol/sms/sendsms";//服务地址、服务端口、软件版本、主账户（用户ID）、
                 //https://api.ucpaas.com/{SoftVersion}/Accounts/{accountSid}/{function}/{operation}?sig={SigParameter}   //function:业务功能；operation：业务操作
 
@@ -242,7 +243,7 @@ namespace WebProxy
             }
 
             string date = DateTime.Now.ToString("yyyyMMddHHmmss");
-            string url = "https://open.ucpaas.com/ol/sms/getsmstemplate";
+            string url = "https://"+ m_restAddress + "/ol/sms/getsmstemplate";
 
             Uri address = new Uri(url);
             HttpWebRequest request = WebRequest.Create(address) as HttpWebRequest;
